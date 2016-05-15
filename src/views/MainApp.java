@@ -24,7 +24,7 @@ public class MainApp {
 	private void menu() {
 		System.out.println("1. DAG info");
 		System.out.println("2. Topological Sort of DAG Nodes");
-		System.out.println("4. Start Time Minimization + visualize schedule");
+		System.out.println("3. Start Time Minimization + visualize schedule");
 
 		Scanner in = new Scanner(System.in);
 		int c = in.nextInt();
