@@ -1,5 +1,9 @@
 package model;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,6 +22,28 @@ public class DAGSolution {
 	private HashMap<String, Integer> taskToFinishTime;
 	private int[] processorReadyTime;
 
+	public static DAGSolution loadSolution(Problem aProblem, String fn){
+		DAGSolution sol = new DAGSolution(aProblem);
+		BufferedReader in;
+		try {
+			in = new BufferedReader(new FileReader(fn));
+			String str;
+			while ((str = in.readLine()) != null) {
+				String[] s = str.split(",");
+				sol.scheduleStartTime(s[0], Integer.parseInt(s[1]), Integer.parseInt(s[2]));
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return sol;
+		
+	}
+	
 	public DAGSolution(Problem aProblem) {
 		this.aProblem = aProblem;
 		taskMapping = new HashMap<String, Integer>();
@@ -300,9 +326,6 @@ public class DAGSolution {
 		return n;
 	}
 
-	// public String findLastTaskOfProcessor(int t) {
-	// return null;
-	// }
 
 	// refactoring 11/02/2013
 	public void scheduleStartTime(String taskId, int processor, int startTime) {

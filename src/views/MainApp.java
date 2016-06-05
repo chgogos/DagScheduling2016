@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
+import model.DAGSolution;
+import model.FullLegalityChecker;
 import model.Problem;
 import solver.SimpleListScheduling;
 import utils.DAGImporter;
@@ -20,11 +22,13 @@ public class MainApp {
 	private String filename;
 	private DAGImporter importer;
 	private Problem aProblem;
+	private DAGSolution sol;
 
 	private void menu() {
 		System.out.println("1. DAG info");
 		System.out.println("2. Topological Sort of DAG Nodes");
 		System.out.println("3. Start Time Minimization + visualize schedule");
+		System.out.println("4. Load solution");
 
 		Scanner in = new Scanner(System.in);
 		int c = in.nextInt();
@@ -34,17 +38,19 @@ public class MainApp {
 			method2();
 		} else if (c == 3) {
 			method3();
+		} else if (c == 4) {
+			method4();
 		}
 		in.close();
 	}
 
 	void method1() {
-		loadDataset(loadProblem());
+		loadDataset(loadFile("txt"));
 		aProblem.printProblemDetails();
 	}
 
 	void method2() {
-		loadDataset(loadProblem());
+		loadDataset(loadFile("txt"));
 		for (String node : aProblem.getTopologicalOrderList()) {
 			System.out.print(node + " ");
 		}
@@ -52,7 +58,7 @@ public class MainApp {
 	}
 
 	void method3() {
-		loadDataset(loadProblem());
+		loadDataset(loadFile("txt"));
 		SimpleListScheduling sls = new SimpleListScheduling(aProblem);
 		sls.solve();
 		VisualizeJFrame app = new VisualizeJFrame(aProblem, sls.getSolution(),
@@ -67,6 +73,23 @@ public class MainApp {
 			System.out.println("Solution is NOT feasible");
 	}
 
+	void method4() {
+		loadDataset(loadFile("txt"));
+		loadSolution(loadFile("sol"));
+		FullLegalityChecker flc = new FullLegalityChecker(aProblem);
+		if (flc.isFeasible(sol) && flc.isComplete(sol))
+			System.out.println("Feasible solution");
+		else
+			System.out.println("Infeasible solution");
+		sol.display();
+		
+	}
+
+	
+	private void loadSolution(String fn) {
+		sol = DAGSolution.loadSolution(aProblem, fn);
+	}
+
 	private void loadDataset(String fn) {
 		this.filename = fn;
 		importer = new DAGImporter(filename);
@@ -77,13 +100,14 @@ public class MainApp {
 		aProblem.computeLevels();
 	}
 
-	private String loadProblem() {
+	
+	private String loadFile(String extension) {
 		String file_name = null;
 		File folder = new File("datasets");
 		File[] listOfFiles = folder.listFiles();
 		List<File> matchingFiles = new ArrayList<File>();
 		for (File aFile : listOfFiles) {
-			if (aFile.getName().endsWith(String.format("txt"))) {
+			if (aFile.getName().endsWith(String.format(extension))) {
 				matchingFiles.add(aFile);
 			}
 		}
@@ -107,4 +131,5 @@ public class MainApp {
 		}
 	}
 
+	
 }
