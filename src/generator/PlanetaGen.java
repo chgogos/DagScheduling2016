@@ -148,19 +148,21 @@ public class PlanetaGen {
 		sb.append("digraph ");
 		sb.append(name);
 		sb.append(" {\n");
-		for (Pair p : dependencies) {
+		List<Pair> deps = new ArrayList<>(dependencies);
+		Collections.sort(deps);
+		for (Pair p : deps) {
 			sb.append(String.format("%d -> %d;\n", p.x, p.y));
 		}
 		sb.append(" }\n");
 		System.out.println(sb.toString());
-		PrintWriter out;
-		try {
-			out = new PrintWriter(name + ".dot");
-			out.println(sb.toString());
-			out.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+//		PrintWriter out;
+//		try {
+//			out = new PrintWriter(name + ".dot");
+//			out.println(sb.toString());
+//			out.close();
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//		}
 	}
 
 	private static void small_instance() {
